@@ -20,6 +20,9 @@ jobs:
           npm install --no-audit --no-fund
           npm test
 
+      - name: Normalizar nombre de imagen (GHCR exige minusculas)
+        run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
+
       - name: Preparar Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -36,7 +39,7 @@ jobs:
           context: ./app
           file: ./app/Dockerfile
           # PRACTICA: cambiar false por true para publicar la imagen.
-          push: false
-          tags: ghcr.io/${{ github.repository }}:sha-${{ github.sha }}
+          push: true
+          tags: ${{ env.IMAGE }}:sha-${{ github.sha }}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
